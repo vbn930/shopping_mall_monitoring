@@ -10,6 +10,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 @dataclass
 class Option:
@@ -126,13 +128,10 @@ class KasinaCrawler:
             
             time.sleep(10)
             
-            # if i == 1:
-            #     # //*[@id="ch-shadow-root-wrapper"]/div[2]/div/article/div/div/div[1]/div/button
-            #     try:
-            #         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="ch-shadow-root-wrapper"]/div[2]/div/article/div/div/div[1]/div/button'))).click()
-            #         print("Modal found and clicked")
-            #     except TimeoutException:
-            #         print("Modal wasn't found")
+            if i == 1:
+                actions = ActionChains(driver)
+                actions.key_down(Keys.ESCAPE).key_up(Keys.ESCAPE).perform()
+                print("Send key")
             
             item_elements = driver.find_elements(By.CLASS_NAME, "l-grid__col.l-grid__col--6")
             for item_element in item_elements:
