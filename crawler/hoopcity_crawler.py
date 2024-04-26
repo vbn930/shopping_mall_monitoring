@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from manager import file_manager
 from manager import web_driver_manager
+from manager import log_manager
 import json
 import pandas as pd
 
@@ -21,7 +22,7 @@ class HoopcityItem:
     options: list
 
 class HoopcityCrawler:
-    def __init__(self, logger):
+    def __init__(self, logger: log_manager.Logger):
         self.logger = logger
         self.file_manager = file_manager.FileManager()
         self.database = dict()
@@ -71,7 +72,13 @@ class HoopcityCrawler:
         return latest_item_url
     
     def set_latest_item(self, json_path, latest_item_url):
-        pass
+        with open(json_path) as file:
+            data = json.load(file)
+            
+        data["hoopcity"] = latest_item_url
+        
+        with open(json_path, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent="\t")
     
     def get_last_page(self, driver_obj: web_driver_manager.Driver):
         driver = driver_obj.driver
@@ -116,25 +123,28 @@ class HoopcityCrawler:
                     item_price = ""
                     item_discount = ""
                     
-                    if driver_obj.is_element_exist(By.CLASS_NAME, "discount-rate", item_price_box_element):
-                        item_price_elements = item_price_box_element.find_elements(By.TAG_NAME, "span")
-                        item_price = item_price_elements[0].text
-                        item_discount = item_price_elements[2].text
-                    else:
-                        item_price = item_price_box_element.find_element(By.CLASS_NAME, "item_price").find_element(By.TAG_NAME, "span").text
-                    
                     item = HoopcityItem(name=item_name, price=item_price, discount=item_discount, img_url=item_img_url, url=item_url, options=[])
-                    print(item)
+                    self.logger.log_debug(f"Item {item_name} info crawling complete")
                     items.append(item)
                 else:
                     return items
         
         return items
     
-    def get_item_option(self, driver_obj: web_driver_manager.Driver, item_url):
+    def get_item_detail_info(self, driver_obj: web_driver_manager.Driver, item_url):
         driver = driver_obj.driver
         driver_obj.get_page(item_url)
         options = []
+        
+        item_price = ""
+        item_discount = ""
+        
+        if driver_obj.is_element_exist(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span'):
+            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span')
+            item_discount = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[2]/dd/strong')
+        else:
+            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl/dd/strong')
+        
         if driver_obj.is_element_exist(By.CLASS_NAME, "opteventBtn_box"):
             option_elements = driver.find_element(By.CLASS_NAME, "opteventBtn_box").find_elements(By.TAG_NAME, "span")
             for option_element in option_elements:
@@ -145,9 +155,8 @@ class HoopcityCrawler:
                     option_soldout = True
                 option = Option(size=option_text, is_soldout=option_soldout)
                 options.append(option)
-            return options
-        else:
-            return None
+        
+        return options, item_price, item_discount
     
     def get_new_items(self, driver_obj: web_driver_manager.Driver):
         json_path = ".\config\latest_item_info.json"
@@ -159,9 +168,10 @@ class HoopcityCrawler:
             self.set_latest_item(json_path, new_items[0].url)
             
         for i in range(len(self.items)):
-            item_option = self.get_item_option(driver_obj, self.items[i].url)
-            if item_option != None:
-                self.items[i].options = item_option
+            item_option, item_price, item_discount = self.get_item_detail_info(driver_obj, self.items[i].url)
+            self.items[i].options = item_option
+            self.items[i].price = item_price
+            self.items[i].discount = item_discount
             print(self.items[i])
             self.add_item_to_database(self.items[i])
             

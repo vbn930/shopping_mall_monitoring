@@ -148,6 +148,8 @@ class WebDriverManager():
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument("--disable-notifications")
         chrome_options.add_experimental_option('excludeSwitches', ['disable-popup-blocking'])
+        prefs = {"profile.managed_default_content_settings.images": 2}
+        chrome_options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(options=chrome_options)
         
         return Driver(self.logger, driver, proxy)

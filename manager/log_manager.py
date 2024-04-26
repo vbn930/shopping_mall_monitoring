@@ -19,33 +19,39 @@ class Logger:
         self.log_stack = []
         
     def log_trace(self, log_msg):
-        if self.log_type >= 2:
+        if self.log_type.value >= 2:
             now = datetime.now()
             msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.TRACE.name}]{log_msg}"
+            print(msg)
             self.log_stack.append(msg)
     
     def log_debug(self, log_msg):
-        if self.log_type >= 2:
+        if self.log_type.value >= 2:
             now = datetime.now()
             msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.DEBUG.name}]{log_msg}"
+            print(msg)
             self.log_stack.append(msg)
             
     def log_info(self, log_msg):
         now = datetime.now()
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.INFO.name}]{log_msg}"
+        print(msg)
         self.log_stack.append(msg)
         
     def log_warn(self, log_msg):
         now = datetime.now()
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.WARN.name}]{log_msg}"
+        print(msg)
         self.log_stack.append(msg)
         
     def log_error(self, log_msg):
         now = datetime.now()
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.ERROR.name}]{log_msg}"
+        print(msg)
         self.log_stack.append(msg)
         
     def log_fatal(self, log_msg):
         now = datetime.now()
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.FATAL.name}]{log_msg}"
+        print(msg)
         self.log_stack.append(msg)
