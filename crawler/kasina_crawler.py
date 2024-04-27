@@ -88,17 +88,6 @@ class KasinaCrawler:
         
         with open(json_path, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent="\t")
-    
-    def close_popup(self, driver_obj: web_driver_manager.Driver):
-        driver = driver_obj.driver
-        
-        btn_elements = driver.find_elements(By.TAG_NAME, "button")
-        
-        for btn_element in btn_elements:
-            if btn_element.get_attribute("color") == "bgtxt-absolute-white-dark":
-                btn_element.click()
-                print("popup closed")
-                break
             
     def get_last_page(self, driver_obj: web_driver_manager.Driver):
         url = "https://www.kasina.co.kr/new?sortType=RECENT_PRODUCT"
@@ -131,7 +120,6 @@ class KasinaCrawler:
             if i == 1:
                 actions = ActionChains(driver)
                 actions.key_down(Keys.ESCAPE).key_up(Keys.ESCAPE).perform()
-                print("Send key")
             
             item_elements = driver.find_elements(By.CLASS_NAME, "l-grid__col.l-grid__col--6")
             for item_element in item_elements:
@@ -144,7 +132,6 @@ class KasinaCrawler:
                     item_discount = ""
                     
                     item = KasinaItem(name=item_name, brand=item_brand, price=item_price, discount=item_discount, img_url=item_img_url, url=item_url, options=[])
-                    self.logger.log_debug(f"Item {item_name} info crawling complete")
                     items.append(item)
                 else:
                     return items
@@ -176,18 +163,19 @@ class KasinaCrawler:
     def get_new_items(self, driver_obj: web_driver_manager.Driver):
         json_path = ".\config\latest_item_info.json"
         latest_item_url = self.get_latest_item(json_path)
-        print(f"Last item url : {latest_item_url}")
         new_items = self.find_items_in_list(driver_obj, latest_item_url)
         self.items += new_items
         if len(new_items) != 0:
             self.set_latest_item(json_path, new_items[0].url)
-            
+        
+        self.logger.log_info(f"Kasina : 총 {len(self.items)}개의 신상품을 감지 하였습니다.")
+        
         for i in range(len(self.items)):
             item_option, item_price, item_discount = self.get_item_detail_info(driver_obj, self.items[i].url)
             self.items[i].options = item_option
             self.items[i].price = item_price
             self.items[i].discount = item_discount
-            print(self.items[i])
+            self.logger.log_info(f"신상품 {self.items[i].name}의 정보 수집을 완료하였습니다.")
             self.add_item_to_database(self.items[i])
             
     def save_db_data_as_excel(self, save_path, file_name):

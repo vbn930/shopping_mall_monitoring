@@ -1,10 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chrome.options import Options
+from discord_webhook import DiscordWebhook, DiscordEmbed
 import time
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-import zipfile
+
+webhook = DiscordWebhook(url="https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD",
+                         content="Test")
+webhook.execute()
+time.sleep(20)
+webhook.delete()
 

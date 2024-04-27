@@ -101,8 +101,6 @@ class HoopcityCrawler:
         
         last_page = self.get_last_page(driver_obj)
         
-        print(f"Last page : {last_page}")
-        
         for i in range(1, last_page+1):
             page_url = f"https://www.hoopcity.co.kr/goods/goods_list.php?page={i}&cateCd=005004&sort=date&pageNum=100"
             
@@ -116,7 +114,6 @@ class HoopcityCrawler:
                 
                 if latest_item_url != item_url:
                     item_img_box_element = item_element.find_element(By.CLASS_NAME, "item_photo_box")
-                    item_price_box_element = item_element.find_element(By.CLASS_NAME, "item_money_box")
                     item_img_url = item_img_box_element.find_element(By.TAG_NAME, "a").find_element(By.TAG_NAME, "img").get_attribute("src")
                     item_name = item_info_elements.find_element(By.CLASS_NAME, "item_tit_box").find_element(By.CLASS_NAME, "item_name").text
                     
@@ -124,7 +121,6 @@ class HoopcityCrawler:
                     item_discount = ""
                     
                     item = HoopcityItem(name=item_name, price=item_price, discount=item_discount, img_url=item_img_url, url=item_url, options=[])
-                    self.logger.log_debug(f"Item {item_name} info crawling complete")
                     items.append(item)
                 else:
                     return items
@@ -140,10 +136,10 @@ class HoopcityCrawler:
         item_discount = ""
         
         if driver_obj.is_element_exist(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span'):
-            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span')
-            item_discount = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[2]/dd/strong')
+            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span').text
+            item_discount = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[2]/dd/strong').text
         else:
-            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl/dd/strong')
+            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl/dd/strong').text
         
         if driver_obj.is_element_exist(By.CLASS_NAME, "opteventBtn_box"):
             option_elements = driver.find_element(By.CLASS_NAME, "opteventBtn_box").find_elements(By.TAG_NAME, "span")
@@ -161,18 +157,18 @@ class HoopcityCrawler:
     def get_new_items(self, driver_obj: web_driver_manager.Driver):
         json_path = ".\config\latest_item_info.json"
         latest_item_url = self.get_latest_item(json_path)
-        print(f"Last item url : {latest_item_url}")
         new_items = self.find_items_in_list(driver_obj, latest_item_url)
         self.items += new_items
         if len(new_items) != 0:
             self.set_latest_item(json_path, new_items[0].url)
-            
+        
+        self.logger.log_info(f"Hoopcity : 총 {len(self.items)}개의 신상품을 감지 하였습니다.")
         for i in range(len(self.items)):
             item_option, item_price, item_discount = self.get_item_detail_info(driver_obj, self.items[i].url)
             self.items[i].options = item_option
             self.items[i].price = item_price
             self.items[i].discount = item_discount
-            print(self.items[i])
+            self.logger.log_info(f"신상품 {self.items[i].name}의 정보 수집을 완료하였습니다.")
             self.add_item_to_database(self.items[i])
             
     def save_db_data_as_excel(self, save_path, file_name):

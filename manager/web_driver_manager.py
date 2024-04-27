@@ -7,15 +7,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium_stealth import stealth
-import pyperclip
-import subprocess
-import time
 from datetime import datetime
-import requests
-import os
-import psutil
 from dataclasses import dataclass
-import random
 import zipfile
 from manager import log_manager
 
@@ -32,11 +25,12 @@ class Driver:
         self.driver = driver
         self.proxy = proxy
         
-        driver.maximize_window()
-        
-    def get_page(self, url, max_wait_time=20):
+    def get_page(self, url, max_wait_time=30):
         is_page_loaded = False
+        cnt = 0
         while(is_page_loaded == False):
+            if cnt >= 10:
+                break
             try:
                 self.driver.get(url)
                 self.driver.implicitly_wait(max_wait_time)
@@ -45,6 +39,7 @@ class Driver:
             except Exception as e:
                 self.logger.log_debug(f"Page load failed : {e}")
                 is_page_loaded = False
+                cnt += 1
     
     def is_element_exist(self, by, value, element=None):
         is_exist = False
@@ -57,21 +52,17 @@ class Driver:
         except NoSuchElementException:
             is_exist = False
         return is_exist
+    
+    def __del__(self):
+        self.driver.quit()
+        del self.driver
+        self.logger.log_debug("Driver deleted")
 
 
 class WebDriverManager():
-    def __init__(self, logger: log_manager.Logger, proxies=None, is_headless=False, is_udc=False):
+    def __init__(self, logger: log_manager.Logger):
         self.logger = logger
-        self.driver_list = list()
-        if proxies != None:
-            for proxy in proxies:
-                drive_obj = self.create_driver(proxy, is_headless, is_udc)
-                self.driver_list.append(drive_obj)
-                #drive_obj.driver.minimize_window()
-        else:
-            drive_obj = self.create_driver(proxies, is_headless, is_udc)
-            self.driver_list.append(drive_obj)
-            #drive_obj.driver.minimize_window()
+        self.drive_obj = None
             
     def create_driver(self, user_agent=None, proxy=None, is_headless=False, is_udc=False):
         chrome_options = webdriver.ChromeOptions()
@@ -151,17 +142,22 @@ class WebDriverManager():
         prefs = {"profile.managed_default_content_settings.images": 2}
         chrome_options.add_experimental_option("prefs", prefs)
         driver = webdriver.Chrome(options=chrome_options)
+        driver.minimize_window()
         
-        return Driver(self.logger, driver, proxy)
+        log_msg = ""
+        if proxy:
+            log_msg = f"Driver created with proxy({proxy.host}:{proxy.port})"
+        else:
+            log_msg = f"Driver created"
+        
+        self.logger.log_debug(log_msg)
+        self.drive_obj = Driver(self.logger, driver, proxy)
+        return self.drive_obj
     
-    #get_driver 후 반드시 사용한 드라이버를 return_driver로 driver manager에 넣어 주어야함
-    def get_driver(self):
-        curr_driver = self.driver_list.pop(0)
-        if curr_driver.proxy:
-            self.logger.log_info(f"Current driver ip : {curr_driver.proxy.host}:{curr_driver.proxy.port}")
-        return curr_driver
-    
-    def return_driver(self, driver):
-        self.driver_list.append(driver)
-        if driver.proxy:
-            self.logger.log_info(f"Returned driver ip : {driver.proxy.host}:{driver.proxy.port}")
+    def delete_driver(self):
+        if self.drive_obj != None:
+            del self.drive_obj
+            self.drive_obj = None
+            
+    def __del__(self):
+        self.delete_driver()
