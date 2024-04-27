@@ -114,6 +114,8 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     
     kasina.clear_data()
     
+    driver_manager.delete_driver()
+    
 if __name__ == '__main__':
     logger = log_manager.Logger(log_manager.LogType.DEBUG)
     driver_manager = web_driver_manager.WebDriverManager(logger)

@@ -145,11 +145,11 @@ class KasinaCrawler:
         item_price = ""
         item_discount = ""
         
-        if driver_obj.is_element_exist(By.CLASS_NAME, "dtl-price__origin"):
-            item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/del').text
-            item_discount = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[2]/dd/strong[2]').text
-        else:
-            item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/strong').text
+        # if driver_obj.is_element_exist(By.CLASS_NAME, "dtl-price__origin"):
+        #     item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/del').text
+        #     item_discount = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[2]/dd/strong[2]').text
+        # else:
+        #     item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/strong').text
 
         if driver_obj.is_element_exist(By.CLASS_NAME, "c-chip-input"):
             option_elements = driver.find_element(By.CLASS_NAME, "c-chip-input").find_elements(By.TAG_NAME, "input")

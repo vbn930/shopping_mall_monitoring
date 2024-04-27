@@ -56,7 +56,6 @@ class Driver:
     def __del__(self):
         self.driver.quit()
         del self.driver
-        self.logger.log_debug("Driver deleted")
 
 
 class WebDriverManager():
@@ -148,7 +147,7 @@ class WebDriverManager():
         if proxy:
             log_msg = f"Driver created with proxy({proxy.host}:{proxy.port})"
         else:
-            log_msg = f"Driver created"
+            log_msg = f"Driver created without proxy"
         
         self.logger.log_debug(log_msg)
         self.drive_obj = Driver(self.logger, driver, proxy)
@@ -158,6 +157,7 @@ class WebDriverManager():
         if self.drive_obj != None:
             del self.drive_obj
             self.drive_obj = None
+            self.logger.log_debug("Driver deleted")
             
     def __del__(self):
         self.delete_driver()
