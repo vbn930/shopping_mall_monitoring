@@ -51,10 +51,13 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     hoopcity.save_db_data_as_excel("./DB/Hoopcity", f"{year}{month}{day}{hour}{minute}_Hoopcity")
     
     for new_item in hoopcity.items:
+        driver_manager.download_image(img_url=new_item.img_url, img_name="thumbnail", img_path="./TEMP", download_cnt=0)
         webhook = DiscordWebhook(url=discord_webhook_url)
         embed = DiscordEmbed(title=new_item.name, url=new_item.url)
+        with open("./TEMP/thumbnail.jpg", "rb") as f:
+            webhook.add_file(file=f.read(), filename="thumbnail.jpg")
         embed.set_author(name="HOOPCITY_RESTOCK")
-        embed.set_thumbnail(url=new_item.img_url)
+        embed.set_thumbnail(url="attachment://thumbnail.jpg")
         if new_item.discount == "":
             embed.add_embed_field(name="Price", value=new_item.price)
         else:
@@ -72,6 +75,7 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
             
             size_field_value += option_value
         embed.add_embed_field(name="Size", value=size_field_value)
+        embed.set_footer(text="AMNotify KR")
         webhook.add_embed(embed)
         webhook.execute()
         del webhook
@@ -84,10 +88,13 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     kasina.save_db_data_as_excel("./DB/Kasina", f"{year}{month}{day}{hour}{minute}_Kasina")
     
     for new_item in kasina.items:
+        driver_manager.download_image(img_url=new_item.img_url, img_name="thumbnail", img_path="./TEMP", download_cnt=0)
         webhook = DiscordWebhook(url=discord_webhook_url)
         embed = DiscordEmbed(title=new_item.name, url=new_item.url)
+        with open("./TEMP/thumbnail.jpg", "rb") as f:
+            webhook.add_file(file=f.read(), filename="thumbnail.jpg")
         embed.set_author(name="KASINA_RESTOCK")
-        embed.set_thumbnail(url=new_item.img_url)
+        embed.set_thumbnail(url="attachment://thumbnail.jpg")
         embed.add_embed_field(name="Brand", value=new_item.brand)
         if new_item.discount == "":
             embed.add_embed_field(name="Price", value=new_item.price)
@@ -106,6 +113,7 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
             
             size_field_value += option_value
         embed.add_embed_field(name="Size", value=size_field_value)
+        embed.set_footer(text="AMNotify KR")
         webhook.add_embed(embed)
         webhook.execute()
         del webhook
@@ -115,6 +123,7 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     kasina.clear_data()
     
     driver_manager.delete_driver()
+    logger.save_log()
     
 if __name__ == '__main__':
     logger = log_manager.Logger(log_manager.LogType.DEBUG)
@@ -125,4 +134,7 @@ if __name__ == '__main__':
     discord_webhook_url, proxies, wait_time = get_initial_setting_from_config(logger, "./config/config.json")
     wait_time = int(wait_time)
     
-    run_monitoring(logger, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+    schedule.every(wait_time).minutes.do(run_monitoring, logger, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+    
+    while True:
+        schedule.run_pending()

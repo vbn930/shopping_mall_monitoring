@@ -55,3 +55,13 @@ class Logger:
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.FATAL.name}]{log_msg}"
         print(msg)
         self.log_stack.append(msg)
+        
+    def save_log(self):
+        file_path = "log.txt"
+        with open(file_path, "w", encoding='UTF-8') as file:
+            for log in self.log_stack:
+                file.write(log + "\n")
+                
+        self.log_stack.clear()
+        del self.log_stack
+        self.log_stack = []

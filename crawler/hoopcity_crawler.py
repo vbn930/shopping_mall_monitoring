@@ -30,6 +30,7 @@ class HoopcityCrawler:
         
         self.database_init()
         self.file_manager.create_dir("./DB/Hoopcity")
+        self.file_manager.create_dir("./TEMP")
         
     def clear_data(self):
         self.database_init()
@@ -135,11 +136,11 @@ class HoopcityCrawler:
         item_price = ""
         item_discount = ""
         
-        # if driver_obj.is_element_exist(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span'):
-        #     item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span').text
-        #     item_discount = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[2]/dd/strong').text
-        # else:
-        #     item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl/dd/strong').text
+        if driver_obj.is_element_exist(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span'):
+            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span').text
+            item_discount = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[2]/dd/strong').text
+        else:
+            item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl/dd/strong').text
         
         if driver_obj.is_element_exist(By.CLASS_NAME, "opteventBtn_box"):
             option_elements = driver.find_element(By.CLASS_NAME, "opteventBtn_box").find_elements(By.TAG_NAME, "span")
@@ -159,8 +160,8 @@ class HoopcityCrawler:
         latest_item_url = self.get_latest_item(json_path)
         new_items = self.find_items_in_list(driver_obj, latest_item_url)
         self.items += new_items
-        if len(new_items) != 0:
-            self.set_latest_item(json_path, new_items[0].url)
+        # if len(new_items) != 0:
+        #     self.set_latest_item(json_path, new_items[0].url)
         
         self.logger.log_info(f"Hoopcity : 총 {len(self.items)}개의 신상품을 감지 하였습니다.")
         for i in range(len(self.items)):

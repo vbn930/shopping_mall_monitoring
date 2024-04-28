@@ -37,6 +37,7 @@ class KasinaCrawler:
         
         self.database_init()
         self.file_manager.create_dir("./DB/Kasina")
+        self.file_manager.create_dir("./TEMP")
         
     def clear_data(self):
         self.database_init()
@@ -99,8 +100,6 @@ class KasinaCrawler:
         if remain != 0:
             last_page += 1
         
-        self.logger.log_debug(f"Last page : {last_page}")
-        
         return last_page
         
     def find_items_in_list(self, driver_obj: web_driver_manager.Driver, latest_item_url):
@@ -145,11 +144,11 @@ class KasinaCrawler:
         item_price = ""
         item_discount = ""
         
-        # if driver_obj.is_element_exist(By.CLASS_NAME, "dtl-price__origin"):
-        #     item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/del').text
-        #     item_discount = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[2]/dd/strong[2]').text
-        # else:
-        #     item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/strong').text
+        if driver_obj.is_element_exist(By.CLASS_NAME, "dtl-price__origin"):
+            item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/del').text
+            item_discount = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[2]/dd/strong[2]').text
+        else:
+            item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/strong').text
 
         if driver_obj.is_element_exist(By.CLASS_NAME, "c-chip-input"):
             option_elements = driver.find_element(By.CLASS_NAME, "c-chip-input").find_elements(By.TAG_NAME, "input")
@@ -165,8 +164,8 @@ class KasinaCrawler:
         latest_item_url = self.get_latest_item(json_path)
         new_items = self.find_items_in_list(driver_obj, latest_item_url)
         self.items += new_items
-        if len(new_items) != 0:
-            self.set_latest_item(json_path, new_items[0].url)
+        # if len(new_items) != 0:
+        #     self.set_latest_item(json_path, new_items[0].url)
         
         self.logger.log_info(f"Kasina : 총 {len(self.items)}개의 신상품을 감지 하였습니다.")
         

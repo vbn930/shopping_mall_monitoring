@@ -10,6 +10,9 @@ from selenium_stealth import stealth
 from datetime import datetime
 from dataclasses import dataclass
 import zipfile
+import requests
+import os
+
 from manager import log_manager
 
 @dataclass
@@ -33,7 +36,7 @@ class Driver:
                 break
             try:
                 self.driver.get(url)
-                self.driver.implicitly_wait(max_wait_time)
+                self.driver.implicitly_wait(10)
                 self.logger.log_debug(f"Get *{url}* page")
                 is_page_loaded = True
             except Exception as e:
@@ -152,6 +155,35 @@ class WebDriverManager():
         self.logger.log_debug(log_msg)
         self.drive_obj = Driver(self.logger, driver, proxy)
         return self.drive_obj
+    
+    def download_image(self, img_url, img_name, img_path, download_cnt, proxy=None):
+        min_size = 50
+        
+        #만약 다운로드 시도횟수가 5번을 넘는다면 다운로드 불가능한 이미지로 간주
+        if download_cnt > 5:
+            self.logger.log_debug(f"Img size is under {min_size}KB or cannot download image \'{img_name}\'")
+            return
+        try:
+            if proxy:
+                proxy_str = f"{proxy[0]}:{proxy[1]}:{proxy[2]}:{proxy[3]}"
+                r = requests.get(img_url,headers={'User-Agent': 'Mozilla/5.0'}, timeout=20, proxies={'http':proxy_str,'https':proxy_str})
+            else:
+                r = requests.get(img_url,headers={'User-Agent': 'Mozilla/5.0'}, timeout=20)
+            with open(f"{img_path}/{img_name}.jpg", "wb") as outfile:
+                outfile.write(r.content)
+        except Exception as e:
+            self.logger.log_debug(f"Image \'{img_url}\' download failed with error : {e}")
+            return
+        #KB 단위의 이미지 사이즈
+        img_size = os.path.getsize(f"{img_path}/{img_name}.jpg") / 1024
+
+        #만약 이미지 크기가 일정 크기 이하라면 다운로드가 실패한것으로 간주, 다시 다운로드
+        if img_size < min_size:
+            self.logger.log_debug(f"Image \'{img_url}\' download failed")
+            self.download_image(img_url, img_name, img_path, download_cnt + 1)
+        else:
+            self.logger.log_debug(f"Image \'{img_url}\' download completed")
+        return
     
     def delete_driver(self):
         if self.drive_obj != None:
