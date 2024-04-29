@@ -1,8 +1,10 @@
-import undetected_chromedriver as uc 
+import undetected_chromedriver as uc
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
@@ -143,7 +145,10 @@ class WebDriverManager():
         chrome_options.add_experimental_option('excludeSwitches', ['disable-popup-blocking'])
         prefs = {"profile.managed_default_content_settings.images": 2}
         chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(options=chrome_options)
+
+        service = Service(excutable_path=ChromeDriverManager().install())
+
+        driver = webdriver.Chrome(options=chrome_options, service=service)
         driver.minimize_window()
         
         log_msg = ""

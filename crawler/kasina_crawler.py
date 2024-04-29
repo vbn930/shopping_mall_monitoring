@@ -100,6 +100,8 @@ class KasinaCrawler:
         if remain != 0:
             last_page += 1
         
+        self.logger.log_debug(f"Kasina : Total {last_page} of pages ")
+
         return last_page
         
     def find_items_in_list(self, driver_obj: web_driver_manager.Driver, latest_item_url):
@@ -107,7 +109,6 @@ class KasinaCrawler:
         driver = driver_obj.driver
         
         last_page = self.get_last_page(driver_obj)
-        time.sleep(10)
         
         for i in range(1, last_page+1):
             page_url = f"https://www.kasina.co.kr/new?sortType=RECENT_PRODUCT&page={i}"
@@ -117,6 +118,7 @@ class KasinaCrawler:
             time.sleep(10)
             
             if i == 1:
+                # For clearing popup window
                 actions = ActionChains(driver)
                 actions.key_down(Keys.ESCAPE).key_up(Keys.ESCAPE).perform()
             
@@ -167,7 +169,7 @@ class KasinaCrawler:
         # if len(new_items) != 0:
         #     self.set_latest_item(json_path, new_items[0].url)
         
-        self.logger.log_info(f"Kasina : 총 {len(self.items)}개의 신상품을 감지 하였습니다.")
+        self.logger.log_info(f"Kasina : 총 {len(self.items)}개의 신상품을 발견 하였습니다.")
         
         for i in range(len(self.items)):
             item_option, item_price, item_discount = self.get_item_detail_info(driver_obj, self.items[i].url)

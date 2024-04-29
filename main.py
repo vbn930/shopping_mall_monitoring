@@ -23,7 +23,7 @@ def get_initial_setting_from_config(logger: log_manager.Logger, json_path):
         proxy_obj = web_driver_manager.Proxy(proxy_info[0], proxy_info[1], proxy_info[2], proxy_info[3])
         proxy_objs.append(proxy_obj)
     
-    logger.log_info(f"설정 정보 받아오기 완료! \n디스코드 웹훅 URL : {discord_webhook_url} \n프록시 개수 : {len(proxies)}개 \n모니터링 주기 : {wait_time}분")
+    logger.log_info(f"프로그램 설정을 성공적으로 인식하였습니다. \n디스코드 웹훅 URL : {discord_webhook_url} \n프록시 개수 : {len(proxies)}개 \n모니터링 주기 : {wait_time}분")
     
     return discord_webhook_url, proxy_objs, wait_time
 
@@ -40,12 +40,13 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     
     driver_obj = None
     curr_proxy = proxies.pop(0)
-    
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+
     if len(proxies) != 0:
-        driver_obj = driver_manager.create_driver(proxy=curr_proxy)
+        driver_obj = driver_manager.create_driver(proxy=curr_proxy, user_agent=user_agent)
         proxies.append(curr_proxy)
     else:
-        driver_obj = driver_manager.create_driver()
+        driver_obj = driver_manager.create_driver(user_agent=user_agent)
     
     hoopcity.get_new_items(driver_obj)
     hoopcity.save_db_data_as_excel("./DB/Hoopcity", f"{year}{month}{day}{hour}{minute}_Hoopcity")
@@ -126,7 +127,7 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     logger.save_log()
     
 if __name__ == '__main__':
-    logger = log_manager.Logger(log_manager.LogType.DEBUG)
+    logger = log_manager.Logger(log_manager.LogType.BUILD)
     driver_manager = web_driver_manager.WebDriverManager(logger)
     hoopcity = hoopcity_crawler.HoopcityCrawler(logger)
     kasina = kasina_crawler.KasinaCrawler(logger)
@@ -136,5 +137,14 @@ if __name__ == '__main__':
     
     schedule.every(wait_time).minutes.do(run_monitoring, logger, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
     
+    run_monitoring(logger, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+
     while True:
-        schedule.run_pending()
+        try:
+            schedule.run_pending()
+        except Exception as e:
+            logger.log_fatal(f"다음과 같은 오류로 프로그램을 종료합니다. : {e}")
+            break
+    
+    logger.log_info(f"프로그램을 종료하시려면 아무 키나 입력해주세요.")
+    end = input("")

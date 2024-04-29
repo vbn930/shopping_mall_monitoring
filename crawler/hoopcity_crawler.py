@@ -91,6 +91,7 @@ class HoopcityCrawler:
         
         last_page = driver.find_element(By.CLASS_NAME, "pagination").find_elements(By.TAG_NAME, "li")[-1].text
         
+        self.logger.log_debug(f"Hoopcity : Total {last_page} of pages ")
         return int(last_page)
     
     def find_items_in_list(self, driver_obj: web_driver_manager.Driver, latest_item_url):
@@ -163,7 +164,7 @@ class HoopcityCrawler:
         # if len(new_items) != 0:
         #     self.set_latest_item(json_path, new_items[0].url)
         
-        self.logger.log_info(f"Hoopcity : 총 {len(self.items)}개의 신상품을 감지 하였습니다.")
+        self.logger.log_info(f"Hoopcity : 총 {len(self.items)}개의 신상품을 발견 하였습니다.")
         for i in range(len(self.items)):
             item_option, item_price, item_discount = self.get_item_detail_info(driver_obj, self.items[i].url)
             self.items[i].options = item_option
