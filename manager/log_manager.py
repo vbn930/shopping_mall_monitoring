@@ -19,18 +19,18 @@ class Logger:
         self.log_stack = []
         
     def log_trace(self, log_msg):
+        now = datetime.now()
+        msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.TRACE.name}]{log_msg}"
+        self.log_stack.append(msg)
         if self.log_type.value >= 2:
-            now = datetime.now()
-            msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.TRACE.name}]{log_msg}"
             print(msg)
-            self.log_stack.append(msg)
     
     def log_debug(self, log_msg):
+        now = datetime.now()
+        msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.DEBUG.name}]{log_msg}"
+        self.log_stack.append(msg)
         if self.log_type.value >= 2:
-            now = datetime.now()
-            msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.DEBUG.name}]{log_msg}"
             print(msg)
-            self.log_stack.append(msg)
             
     def log_info(self, log_msg):
         now = datetime.now()
@@ -49,12 +49,14 @@ class Logger:
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.ERROR.name}]{log_msg}"
         print(msg)
         self.log_stack.append(msg)
+        self.save_log()
         
     def log_fatal(self, log_msg):
         now = datetime.now()
         msg = f"[{now.strftime('%Y-%m-%d %H:%M:%S')}][{LogLevel.FATAL.name}]{log_msg}"
         print(msg)
         self.log_stack.append(msg)
+        self.save_log()
         
     def save_log(self):
         file_path = "log.txt"

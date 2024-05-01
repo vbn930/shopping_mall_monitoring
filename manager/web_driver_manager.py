@@ -1,15 +1,8 @@
-import undetected_chromedriver as uc
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-from selenium_stealth import stealth
-from datetime import datetime
 from dataclasses import dataclass
 import zipfile
 import requests
@@ -37,8 +30,8 @@ class Driver:
             if cnt >= 10:
                 break
             try:
+                self.driver.implicitly_wait(30)
                 self.driver.get(url)
-                self.driver.implicitly_wait(10)
                 self.logger.log_debug(f"Get *{url}* page")
                 is_page_loaded = True
             except Exception as e:
@@ -47,6 +40,7 @@ class Driver:
                 cnt += 1
     
     def is_element_exist(self, by, value, element=None):
+        self.driver.implicitly_wait(5)
         is_exist = False
         try:
             if element != None:
@@ -145,6 +139,7 @@ class WebDriverManager():
         chrome_options.add_experimental_option('excludeSwitches', ['disable-popup-blocking'])
         prefs = {"profile.managed_default_content_settings.images": 2}
         chrome_options.add_experimental_option("prefs", prefs)
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
         service = Service(excutable_path=ChromeDriverManager().install())
 

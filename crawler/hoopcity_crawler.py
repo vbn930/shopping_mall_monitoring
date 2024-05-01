@@ -139,7 +139,10 @@ class HoopcityCrawler:
         
         if driver_obj.is_element_exist(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span'):
             item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[1]/dd/span').text
+            item_price = "₩" + item_price
+            
             item_discount = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl[2]/dd/strong').text
+            item_discount = "₩" + item_discount
         else:
             item_price = driver.find_element(By.XPATH, '//*[@id="frmView"]/div/div/div[1]/dl/dd/strong').text
         
@@ -161,8 +164,8 @@ class HoopcityCrawler:
         latest_item_url = self.get_latest_item(json_path)
         new_items = self.find_items_in_list(driver_obj, latest_item_url)
         self.items += new_items
-        # if len(new_items) != 0:
-        #     self.set_latest_item(json_path, new_items[0].url)
+        if len(new_items) != 0:
+            self.set_latest_item(json_path, new_items[0].url)
         
         self.logger.log_info(f"Hoopcity : 총 {len(self.items)}개의 신상품을 발견 하였습니다.")
         for i in range(len(self.items)):

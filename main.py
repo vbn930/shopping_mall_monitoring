@@ -1,19 +1,22 @@
 from manager import web_driver_manager
 from manager import log_manager
+from manager import resource_monitor_manager
 from crawler import hoopcity_crawler
 from crawler import kasina_crawler
 
 import datetime
-import schedule
 import json
 import time
 from discord_webhook import DiscordWebhook, DiscordEmbed
+
+# pyinstaller -n "HOOPCITY_KASINA_MONITORING_PROGRAM_1.2" --clean --onefile main.py
 
 def get_initial_setting_from_config(logger: log_manager.Logger, json_path):
     with open(json_path) as file:
         data = json.load(file)
     
-    discord_webhook_url = data["discord_webhook_url"]
+    hoopcity_discord_webhook_url = data["hoopcity_discord_webhook_url"]
+    kasina_discord_webhook_url = data["kasina_discord_webhook_url"]
     proxies = data["proxies"]
     wait_time = data["wait_time"]
     
@@ -23,13 +26,14 @@ def get_initial_setting_from_config(logger: log_manager.Logger, json_path):
         proxy_obj = web_driver_manager.Proxy(proxy_info[0], proxy_info[1], proxy_info[2], proxy_info[3])
         proxy_objs.append(proxy_obj)
     
-    logger.log_info(f"프로그램 설정을 성공적으로 인식하였습니다. \n디스코드 웹훅 URL : {discord_webhook_url} \n프록시 개수 : {len(proxies)}개 \n모니터링 주기 : {wait_time}분")
+    logger.log_info(f"프로그램 설정을 성공적으로 인식하였습니다. \nHoopcity 디스코드 웹훅 URL : {hoopcity_discord_webhook_url} \nKasina 디스코드 웹훅 URL : {kasina_discord_webhook_url} \n프록시 개수 : {len(proxies)}개 \n모니터링 주기 : {wait_time}분")
     
-    return discord_webhook_url, proxy_objs, wait_time
+    return hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxy_objs, wait_time
 
-def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manager.WebDriverManager, 
+def run_monitoring(logger: log_manager.Logger, resource_monitor: resource_monitor_manager.ResourceMonitor,
+                   driver_manager: web_driver_manager.WebDriverManager, 
                    hoopcity: hoopcity_crawler.HoopcityCrawler, kasina: kasina_crawler.KasinaCrawler, 
-                   discord_webhook_url, proxies):
+                   hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxies):
     
     now = datetime.datetime.now()
     year = f"{now.year}"
@@ -49,11 +53,12 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
         driver_obj = driver_manager.create_driver(user_agent=user_agent)
     
     hoopcity.get_new_items(driver_obj)
-    hoopcity.save_db_data_as_excel("./DB/Hoopcity", f"{year}{month}{day}{hour}{minute}_Hoopcity")
+    if len(hoopcity.items) != 0:
+        hoopcity.save_db_data_as_excel("./DB/Hoopcity", f"{year}{month}{day}{hour}{minute}_Hoopcity")
     
     for new_item in hoopcity.items:
         driver_manager.download_image(img_url=new_item.img_url, img_name="thumbnail", img_path="./TEMP", download_cnt=0)
-        webhook = DiscordWebhook(url=discord_webhook_url)
+        webhook = DiscordWebhook(url=hoopcity_discord_webhook_url)
         embed = DiscordEmbed(title=new_item.name, url=new_item.url)
         with open("./TEMP/thumbnail.jpg", "rb") as f:
             webhook.add_file(file=f.read(), filename="thumbnail.jpg")
@@ -77,6 +82,7 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
             size_field_value += option_value
         embed.add_embed_field(name="Size", value=size_field_value)
         embed.set_footer(text="AMNotify KR")
+        embed.set_timestamp()
         webhook.add_embed(embed)
         webhook.execute()
         del webhook
@@ -86,11 +92,12 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     hoopcity.clear_data()
     
     kasina.get_new_items(driver_obj)
-    kasina.save_db_data_as_excel("./DB/Kasina", f"{year}{month}{day}{hour}{minute}_Kasina")
+    if len(kasina.items) != 0:
+        kasina.save_db_data_as_excel("./DB/Kasina", f"{year}{month}{day}{hour}{minute}_Kasina")
     
     for new_item in kasina.items:
         driver_manager.download_image(img_url=new_item.img_url, img_name="thumbnail", img_path="./TEMP", download_cnt=0)
-        webhook = DiscordWebhook(url=discord_webhook_url)
+        webhook = DiscordWebhook(url=kasina_discord_webhook_url)
         embed = DiscordEmbed(title=new_item.name, url=new_item.url)
         with open("./TEMP/thumbnail.jpg", "rb") as f:
             webhook.add_file(file=f.read(), filename="thumbnail.jpg")
@@ -115,6 +122,7 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
             size_field_value += option_value
         embed.add_embed_field(name="Size", value=size_field_value)
         embed.set_footer(text="AMNotify KR")
+        embed.set_timestamp()
         webhook.add_embed(embed)
         webhook.execute()
         del webhook
@@ -124,27 +132,36 @@ def run_monitoring(logger: log_manager.Logger, driver_manager: web_driver_manage
     kasina.clear_data()
     
     driver_manager.delete_driver()
-    logger.save_log()
-    
-if __name__ == '__main__':
-    logger = log_manager.Logger(log_manager.LogType.BUILD)
-    driver_manager = web_driver_manager.WebDriverManager(logger)
-    hoopcity = hoopcity_crawler.HoopcityCrawler(logger)
-    kasina = kasina_crawler.KasinaCrawler(logger)
-    
-    discord_webhook_url, proxies, wait_time = get_initial_setting_from_config(logger, "./config/config.json")
-    wait_time = int(wait_time)
-    
-    schedule.every(wait_time).minutes.do(run_monitoring, logger, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
-    
-    run_monitoring(logger, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+    resource_monitor.print_current_resource_usage()
 
-    while True:
-        try:
-            schedule.run_pending()
-        except Exception as e:
-            logger.log_fatal(f"다음과 같은 오류로 프로그램을 종료합니다. : {e}")
-            break
+    logger.save_log()
+
+def run_resource_monitoring(resource_monitor: resource_monitor_manager.ResourceMonitor):
+    resource_monitor.print_current_resource_usage()
+
+if __name__ == '__main__':
+    try:
+        logger = log_manager.Logger(log_manager.LogType.BUILD)
+        driver_manager = web_driver_manager.WebDriverManager(logger)
+        hoopcity = hoopcity_crawler.HoopcityCrawler(logger)
+        kasina = kasina_crawler.KasinaCrawler(logger)
+        resource_monitor = resource_monitor_manager.ResourceMonitor(logger)
+        
+        hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxies, wait_time = get_initial_setting_from_config(logger, "./config/config.json")
+        
+        # schedule.every(wait_time).minutes.do(run_monitoring, logger, resource_monitor, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+        # schedule.every(5).minutes.do(run_resource_monitoring, resource_monitor)
+        
+        # run_monitoring(logger, resource_monitor, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+
+        while True:
+            # schedule.run_pending()
+            run_monitoring(logger, resource_monitor, driver_manager, hoopcity, kasina, hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxies)
+            logger.log_info(f"다음 정보 신상품 정보 수집까지 {wait_time}분 대기합니다.")
+            time.sleep(wait_time*60)
+    
+    except Exception as e:
+        logger.log_error(f"다음과 같은 오류로 프로그램을 종료합니다. : {e}")
     
     logger.log_info(f"프로그램을 종료하시려면 아무 키나 입력해주세요.")
     end = input("")

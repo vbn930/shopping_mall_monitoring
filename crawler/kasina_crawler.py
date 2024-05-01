@@ -6,10 +6,7 @@ import json
 import pandas as pd
 import time
 
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -166,8 +163,8 @@ class KasinaCrawler:
         latest_item_url = self.get_latest_item(json_path)
         new_items = self.find_items_in_list(driver_obj, latest_item_url)
         self.items += new_items
-        # if len(new_items) != 0:
-        #     self.set_latest_item(json_path, new_items[0].url)
+        if len(new_items) != 0:
+            self.set_latest_item(json_path, new_items[0].url)
         
         self.logger.log_info(f"Kasina : 총 {len(self.items)}개의 신상품을 발견 하였습니다.")
         
