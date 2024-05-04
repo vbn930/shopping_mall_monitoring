@@ -1,20 +1,32 @@
-[2024-04-30 16:23:56][INFO]프로그램 설정을 성공적으로 인식하였습니다. 
+[2024-05-01 11:24:34][INFO]프로그램 설정을 성공적으로 인식하였습니다. 
 Hoopcity 디스코드 웹훅 URL : https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD 
 Kasina 디스코드 웹훅 URL : https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD 
 프록시 개수 : 5개 
 모니터링 주기 : 0.5분
-[2024-04-30 16:24:00][DEBUG]Driver created with proxy(124.175.161.152:11089)
-[2024-04-30 16:24:02][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?cateCd=005004&sort=date&pageNum=100* page
-[2024-04-30 16:24:23][DEBUG]Hoopcity : Total 5 of pages 
-[2024-04-30 16:24:27][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?page=1&cateCd=005004&sort=date&pageNum=100* page
-[2024-04-30 16:24:27][INFO]Hoopcity : 총 0개의 신상품을 발견 하였습니다.
-[2024-04-30 16:24:44][DEBUG]Get *https://www.kasina.co.kr/new?sortType=RECENT_PRODUCT* page
-[2024-04-30 16:24:44][DEBUG]Kasina : Total 34 of pages 
-[2024-04-30 16:24:52][DEBUG]Get *https://www.kasina.co.kr/new?sortType=RECENT_PRODUCT&page=1* page
-[2024-04-30 16:25:02][INFO]Kasina : 총 0개의 신상품을 발견 하였습니다.
-[2024-04-30 16:25:02][DEBUG]Driver deleted
-[2024-04-30 16:25:03][INFO]프로세스 정보 
+[2024-05-01 11:24:43][DEBUG]Driver created with proxy(124.175.161.152:11089)
+[2024-05-01 11:24:50][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?cateCd=005004&sort=date&pageNum=100* page
+[2024-05-01 11:25:11][DEBUG]Hoopcity : Total 5 of pages 
+[2024-05-01 11:25:14][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?page=1&cateCd=005004&sort=date&pageNum=100* page
+[2024-05-01 11:25:14][INFO]Hoopcity : 총 1개의 신상품을 발견 하였습니다.
+[2024-05-01 11:25:23][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_view.php?goodsNo=1000007973* page
+[2024-05-01 11:25:29][INFO]신상품 자이언 3 SE PF의 정보 수집을 완료하였습니다.
+[2024-05-01 11:25:30][DEBUG]Image 'https://hoopcity.hgodo.com/jordan/footwear/basketball/FN1778-500(1).jpg' download completed
+[2024-05-01 11:25:55][DEBUG]Get *https://www.kasina.co.kr/new* page
+[2024-05-01 11:25:55][DEBUG]Kasina : Total 34 of pages 
+[2024-05-01 11:26:00][DEBUG]Get *https://www.kasina.co.kr/new?page=1* page
+[2024-05-01 11:26:11][INFO]Kasina : 총 3개의 신상품을 발견 하였습니다.
+[2024-05-01 11:26:22][DEBUG]Get *https://www.kasina.co.kr/product-detail/119590026* page
+[2024-05-01 11:26:28][INFO]신상품 NIKE ACG AIR EXPLORAID의 정보 수집을 완료하였습니다.
+[2024-05-01 11:26:35][DEBUG]Get *https://www.kasina.co.kr/product-detail/119590024* page
+[2024-05-01 11:26:40][INFO]신상품 NIKE AIR FOOTSCAPE WOVEN의 정보 수집을 완료하였습니다.
+[2024-05-01 11:26:44][DEBUG]Get *https://www.kasina.co.kr/product-detail/119498687* page
+[2024-05-01 11:26:49][INFO]신상품 NIKE W ZOOM VOMERO 5의 정보 수집을 완료하였습니다.
+[2024-05-01 11:26:50][DEBUG]Image 'https://shopby-images.cdn-nhncommerce.com/20240425/154350.96169000/FJ1920-400_1.webp' download completed
+[2024-05-01 11:26:54][DEBUG]Image 'https://shopby-images.cdn-nhncommerce.com/20240425/160030.332748000/FZ0405-001_1.webp' download completed
+[2024-05-01 11:26:56][DEBUG]Image 'https://shopby-images.cdn-nhncommerce.com/20240419/113911.72662000/FJ2028-001_1.webp' download completed
+[2024-05-01 11:26:58][DEBUG]Driver deleted
+[2024-05-01 11:26:59][INFO]프로세스 정보 
 이름 : python.exe 
-PID : 19700 
+PID : 9468 
 현재 시스템 리소스 사용량 
-RAM : 0.458%
+RAM : 0.527%

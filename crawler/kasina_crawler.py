@@ -88,7 +88,7 @@ class KasinaCrawler:
             json.dump(data, file, indent="\t")
             
     def get_last_page(self, driver_obj: web_driver_manager.Driver):
-        url = "https://www.kasina.co.kr/new?sortType=RECENT_PRODUCT"
+        url = "https://www.kasina.co.kr/new"
         driver = driver_obj.driver
         driver_obj.get_page(url)
         total_item = int(driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[2]/div/div[1]/strong').text.replace(",",""))
@@ -108,7 +108,7 @@ class KasinaCrawler:
         last_page = self.get_last_page(driver_obj)
         
         for i in range(1, last_page+1):
-            page_url = f"https://www.kasina.co.kr/new?sortType=RECENT_PRODUCT&page={i}"
+            page_url = f"https://www.kasina.co.kr/new?page={i}"
             
             driver_obj.get_page(page_url)
             

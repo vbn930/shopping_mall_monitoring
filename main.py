@@ -9,7 +9,7 @@ import json
 import time
 from discord_webhook import DiscordWebhook, DiscordEmbed
 
-# pyinstaller -n "HOOPCITY_KASINA_MONITORING_PROGRAM_1.2" --clean --onefile main.py
+# pyinstaller -n "HOOPCITY_KASINA_MONITORING_PROGRAM_1.3" --clean --onefile main.py
 
 def get_initial_setting_from_config(logger: log_manager.Logger, json_path):
     with open(json_path) as file:
