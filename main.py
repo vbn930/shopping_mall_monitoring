@@ -140,6 +140,16 @@ def run_resource_monitoring(resource_monitor: resource_monitor_manager.ResourceM
     resource_monitor.print_current_resource_usage()
 
 if __name__ == '__main__':
+    # logger = log_manager.Logger(log_manager.LogType.DEBUG)
+    # driver_manager = web_driver_manager.WebDriverManager(logger)
+    # hoopcity = hoopcity_crawler.HoopcityCrawler(logger)
+    # kasina = kasina_crawler.KasinaCrawler(logger)
+    # resource_monitor = resource_monitor_manager.ResourceMonitor(logger)
+        
+    # hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxies, wait_time = get_initial_setting_from_config(logger, "./config/config.json")
+        
+    # run_monitoring(logger, resource_monitor, driver_manager, hoopcity, kasina, hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxies)
+    
     try:
         logger = log_manager.Logger(log_manager.LogType.BUILD)
         driver_manager = web_driver_manager.WebDriverManager(logger)
@@ -152,7 +162,7 @@ if __name__ == '__main__':
         # schedule.every(wait_time).minutes.do(run_monitoring, logger, resource_monitor, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
         # schedule.every(5).minutes.do(run_resource_monitoring, resource_monitor)
         
-        # run_monitoring(logger, resource_monitor, driver_manager, hoopcity, kasina, discord_webhook_url, proxies)
+        # run_monitoring(logger, resource_monitor, driver_manager, hoopcity, kasina, hoopcity_discord_webhook_url, kasina_discord_webhook_url, proxies)
 
         while True:
             # schedule.run_pending()

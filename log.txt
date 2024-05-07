@@ -1,32 +1,34 @@
-[2024-05-01 11:24:34][INFO]프로그램 설정을 성공적으로 인식하였습니다. 
-Hoopcity 디스코드 웹훅 URL : https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD 
-Kasina 디스코드 웹훅 URL : https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD 
-프록시 개수 : 5개 
-모니터링 주기 : 0.5분
-[2024-05-01 11:24:43][DEBUG]Driver created with proxy(124.175.161.152:11089)
-[2024-05-01 11:24:50][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?cateCd=005004&sort=date&pageNum=100* page
-[2024-05-01 11:25:11][DEBUG]Hoopcity : Total 5 of pages 
-[2024-05-01 11:25:14][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?page=1&cateCd=005004&sort=date&pageNum=100* page
-[2024-05-01 11:25:14][INFO]Hoopcity : 총 1개의 신상품을 발견 하였습니다.
-[2024-05-01 11:25:23][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_view.php?goodsNo=1000007973* page
-[2024-05-01 11:25:29][INFO]신상품 자이언 3 SE PF의 정보 수집을 완료하였습니다.
-[2024-05-01 11:25:30][DEBUG]Image 'https://hoopcity.hgodo.com/jordan/footwear/basketball/FN1778-500(1).jpg' download completed
-[2024-05-01 11:25:55][DEBUG]Get *https://www.kasina.co.kr/new* page
-[2024-05-01 11:25:55][DEBUG]Kasina : Total 34 of pages 
-[2024-05-01 11:26:00][DEBUG]Get *https://www.kasina.co.kr/new?page=1* page
-[2024-05-01 11:26:11][INFO]Kasina : 총 3개의 신상품을 발견 하였습니다.
-[2024-05-01 11:26:22][DEBUG]Get *https://www.kasina.co.kr/product-detail/119590026* page
-[2024-05-01 11:26:28][INFO]신상품 NIKE ACG AIR EXPLORAID의 정보 수집을 완료하였습니다.
-[2024-05-01 11:26:35][DEBUG]Get *https://www.kasina.co.kr/product-detail/119590024* page
-[2024-05-01 11:26:40][INFO]신상품 NIKE AIR FOOTSCAPE WOVEN의 정보 수집을 완료하였습니다.
-[2024-05-01 11:26:44][DEBUG]Get *https://www.kasina.co.kr/product-detail/119498687* page
-[2024-05-01 11:26:49][INFO]신상품 NIKE W ZOOM VOMERO 5의 정보 수집을 완료하였습니다.
-[2024-05-01 11:26:50][DEBUG]Image 'https://shopby-images.cdn-nhncommerce.com/20240425/154350.96169000/FJ1920-400_1.webp' download completed
-[2024-05-01 11:26:54][DEBUG]Image 'https://shopby-images.cdn-nhncommerce.com/20240425/160030.332748000/FZ0405-001_1.webp' download completed
-[2024-05-01 11:26:56][DEBUG]Image 'https://shopby-images.cdn-nhncommerce.com/20240419/113911.72662000/FJ2028-001_1.webp' download completed
-[2024-05-01 11:26:58][DEBUG]Driver deleted
-[2024-05-01 11:26:59][INFO]프로세스 정보 
+[2024-05-04 17:10:17][INFO]다음 정보 신상품 정보 수집까지 0.5분 대기합니다.
+[2024-05-04 17:10:49][DEBUG]Driver created with proxy(124.175.161.155:11089)
+[2024-05-04 17:10:54][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?cateCd=005004&sort=date&pageNum=100* page
+[2024-05-04 17:11:11][DEBUG]Hoopcity : Total 5 of pages 
+[2024-05-04 17:11:14][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_list.php?page=1&cateCd=005004&sort=date&pageNum=100* page
+[2024-05-04 17:11:14][INFO]Hoopcity : 총 0개의 신상품을 발견 하였습니다.
+[2024-05-04 17:11:14][INFO]Hoopcity : 총 2개의 재고 확인 상품을 발견 하였습니다.
+[2024-05-04 17:11:18][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_view.php?goodsNo=1000007977* page
+[2024-05-04 17:11:23][INFO]재고 확인 상품 에어 조던 4 레트로 '인더스트리얼 블루' 주니어 신발의 정보 수집을 완료하였습니다.
+[2024-05-04 17:11:29][DEBUG]Get *https://www.hoopcity.co.kr/goods/goods_view.php?goodsNo=1000007973* page
+[2024-05-04 17:11:34][INFO]재고 확인 상품 자이언 3 SE PF의 정보 수집을 완료하였습니다.
+[2024-05-04 17:11:35][DEBUG]Image 'https://hoopcity.hgodo.com/jordan/footwear/basketball/HF4281-141(1).jpg' download completed
+[2024-05-04 17:11:36][DEBUG]Image 'https://hoopcity.hgodo.com/jordan/footwear/basketball/FN1778-500(1).jpg' download completed
+[2024-05-04 17:11:53][DEBUG]Get *https://www.kasina.co.kr/new* page
+[2024-05-04 17:11:53][DEBUG]Kasina : Total 33 of pages 
+[2024-05-04 17:11:58][DEBUG]Get *https://www.kasina.co.kr/new?page=1* page
+[2024-05-04 17:12:08][INFO]Kasina : 총 0개의 신상품을 발견 하였습니다.
+[2024-05-04 17:12:08][INFO]Kasina : 총 5개의 재고 확인 상품을 발견 하였습니다.
+[2024-05-04 17:12:14][DEBUG]Get *https://www.kasina.co.kr/product-detail/119595815* page
+[2024-05-04 17:12:24][INFO]재고 확인 상품 [APP EXCLUSIVE] AIR JORDAN 4 RETRO의 정보 수집을 완료하였습니다.
+[2024-05-04 17:12:26][DEBUG]Get *https://www.kasina.co.kr/product-detail/119646605* page
+[2024-05-04 17:12:36][INFO]재고 확인 상품 [APP EXCLUSIVE] [KASINA 1997] AIR JORDAN 4 RETRO의 정보 수집을 완료하였습니다.
+[2024-05-04 17:12:38][DEBUG]Get *https://www.kasina.co.kr/product-detail/119595813* page
+[2024-05-04 17:12:43][INFO]재고 확인 상품 [APP EXCLUSIVE] AIR JORDAN 4 RETRO (GS)의 정보 수집을 완료하였습니다.
+[2024-05-04 17:12:45][DEBUG]Get *https://www.kasina.co.kr/product-detail/119595810* page
+[2024-05-04 17:12:50][INFO]재고 확인 상품 [APP EXCLUSIVE] JORDAN 4 RETRO (PS)의 정보 수집을 완료하였습니다.
+[2024-05-04 17:12:52][DEBUG]Get *https://www.kasina.co.kr/product-detail/119617851* page
+[2024-05-04 17:12:57][INFO]재고 확인 상품 [APP EXCLUSIVE] JORDAN 4 RETRO (TD)의 정보 수집을 완료하였습니다.
+[2024-05-04 17:12:57][DEBUG]Driver deleted
+[2024-05-04 17:12:57][INFO]프로세스 정보 
 이름 : python.exe 
-PID : 9468 
+PID : 32636 
 현재 시스템 리소스 사용량 
-RAM : 0.527%
+RAM : 0.556%

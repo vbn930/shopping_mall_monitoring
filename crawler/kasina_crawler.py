@@ -78,6 +78,35 @@ class KasinaCrawler:
         
         return latest_item_url
     
+    def add_items_to_restock_check_list(self):
+        json_path = "./config/restock_check_list.json"
+        with open(json_path, encoding='UTF-8') as file:
+            data = json.load(file)
+        
+        restock_check_list = data["kasina"]
+        for item in self.items:
+            restock_check_list.append([item.name, item.brand, item.img_url, item.url, False])
+            
+        data["kasina"] = restock_check_list
+        
+        with open(json_path, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent="\t", ensure_ascii=False)
+    
+    def get_restock_check_items(self):
+        json_path = "./config/restock_check_list.json"
+        with open(json_path, encoding='UTF-8') as file:
+            data = json.load(file)
+
+        restock_check_list = data["kasina"]
+        restock_list = []
+        
+        for item in restock_check_list:
+            if item[4] == True:
+                restock_item = KasinaItem(name=item[0], brand=item[1], price="", discount="", img_url=item[2], url=item[3], options=[])
+                restock_list.append(restock_item)
+                
+        return restock_list
+    
     def set_latest_item(self, json_path, latest_item_url):
         with open(json_path) as file:
             data = json.load(file)
@@ -147,7 +176,7 @@ class KasinaCrawler:
             item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/del').text
             item_discount = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[2]/dd/strong[2]').text
         else:
-            item_price = driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[1]/div[2]/div/div[1]/div[3]/dl/div[1]/dd/strong').text
+            item_price = driver.find_element(By.CLASS_NAME, 'dtl-price__discount').find_element(By.TAG_NAME, "strong").text
 
         if driver_obj.is_element_exist(By.CLASS_NAME, "c-chip-input"):
             option_elements = driver.find_element(By.CLASS_NAME, "c-chip-input").find_elements(By.TAG_NAME, "input")
@@ -175,6 +204,19 @@ class KasinaCrawler:
             self.items[i].discount = item_discount
             self.logger.log_info(f"신상품 {self.items[i].name}의 정보 수집을 완료하였습니다.")
             self.add_item_to_database(self.items[i])
+        
+        self.add_items_to_restock_check_list()
+        restock_item_list = self.get_restock_check_items()
+        self.logger.log_info(f"Kasina : 총 {len(restock_item_list)}개의 재고 확인 상품을 발견 하였습니다.")
+        for restock_item in restock_item_list:
+            item_option, item_price, item_discount = self.get_item_detail_info(driver_obj, restock_item.url)
+            restock_item.options = item_option
+            restock_item.price = item_price
+            restock_item.discount = item_discount
+            self.logger.log_info(f"재고 확인 상품 {restock_item.name}의 정보 수집을 완료하였습니다.")
+            self.add_item_to_database(restock_item)
+        
+        self.items += restock_item_list
             
     def save_db_data_as_excel(self, save_path, file_name):
         data_frame = pd.DataFrame(self.database)
