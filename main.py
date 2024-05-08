@@ -172,6 +172,7 @@ if __name__ == '__main__':
     
     except Exception as e:
         logger.log_error(f"다음과 같은 오류로 프로그램을 종료합니다. : {e}")
+        logger.save_log()
     
     logger.log_info(f"프로그램을 종료하시려면 아무 키나 입력해주세요.")
     end = input("")
