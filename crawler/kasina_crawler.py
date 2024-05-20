@@ -9,6 +9,8 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 @dataclass
 class Option:
@@ -120,6 +122,9 @@ class KasinaCrawler:
         url = "https://www.kasina.co.kr/new"
         driver = driver_obj.driver
         driver_obj.get_page(url)
+        
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="cts"]/div/div[2]/div/div[1]/strong')))
+        
         total_item = int(driver.find_element(By.XPATH, '//*[@id="cts"]/div/div[2]/div/div[1]/strong').text.replace(",",""))
         last_page = total_item // 100
         remain = total_item % 100
@@ -147,6 +152,8 @@ class KasinaCrawler:
                 # For clearing popup window
                 actions = ActionChains(driver)
                 actions.key_down(Keys.ESCAPE).key_up(Keys.ESCAPE).perform()
+            
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "l-grid__col.l-grid__col--6")))
             
             item_elements = driver.find_elements(By.CLASS_NAME, "l-grid__col.l-grid__col--6")
             for item_element in item_elements:
