@@ -1,6 +1,6 @@
 {
-    "hoopcity_discord_webhook_url": "https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD",
-    "kasina_discord_webhook_url": "https://discord.com/api/webhooks/1233783047523012759/u7-Qh6WMH0jBgI4mSLNZJCXZHGQKDQsOLKnMzBdFFqI__lWPMjPluST501w5_KhCcHjD",
+    "hoopcity_discord_webhook_url": "WEBHOOK_TOKEN",
+    "kasina_discord_webhook_url": "WEBHOOK_TOKEN",
     "proxies": [
 
     ],
